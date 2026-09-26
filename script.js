@@ -138,19 +138,17 @@ form.addEventListener("submit", async (e) => {
     // ================================
 
     const response = await fetch(
-  "https://leaf-d45ttxcft-leaf-gpt.vercel.app/api/chat",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-          messages: messages
-        })
-      }
-    );
+  "https://leaf-gpt.vercel.app/api/chat",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      messages: messages
+    })
+  }
+);
 
     const data = await response.json();
 
