@@ -4,77 +4,342 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#111315">
+
   <title>LeafGPT</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
   <link rel="stylesheet" href="style.css">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
+
   <aside class="sidebar">
+
     <div class="brand-row">
-      <div class="brand">LeafGPT <span>🍃</span></div>
-      <button class="icon-btn" aria-label="Nowy czat">✎</button>
+
+      <div class="brand">
+        LeafGPT <span>🍃</span>
+      </div>
+
+      <button
+        class="icon-btn"
+        id="newChatIcon"
+        type="button"
+        aria-label="Nowy czat"
+      >
+        ✎
+      </button>
+
     </div>
 
-    <button class="new-chat">◯ <span>Nowy czat</span></button>
+    <button
+      class="new-chat"
+      id="newChatButton"
+      type="button"
+    >
+      ◯
+      <span>Nowy czat</span>
+    </button>
+
 
     <nav class="nav">
-      <button>◉ <span>Odkrywaj</span></button>
-      <button>▥ <span>Statystyki</span></button>
-      <button>♧ <span>Wpływ na planetę</span></button>
-      <button>⚙ <span>Ustawienia</span></button>
+
+      <button type="button">
+        ◉
+        <span>Odkrywaj</span>
+      </button>
+
+      <button type="button">
+        ▥
+        <span>Statystyki</span>
+      </button>
+
+      <button type="button">
+        ♧
+        <span>Wpływ na planetę</span>
+      </button>
+
+      <button type="button">
+        ⚙
+        <span>Ustawienia</span>
+      </button>
+
     </nav>
+
 
     <div class="divider"></div>
 
+
     <section class="history">
+
       <p>Ostatnie rozmowy</p>
-      <div id="historyList">
-        <button>○ <span>Jak działa LeafGPT?</span></button>
-        <button>○ <span>Pomysły na ekologiczne nawyki</span></button>
-      </div>
+
+      <!--
+        Tutaj NIE MA już przykładowych rozmów.
+        JS wczytuje prawdziwe czaty z Supabase.
+      -->
+
+      <div id="historyList"></div>
+
     </section>
 
-    <button class="account" id="accountButton" type="button"><div class="avatar">●</div><div><strong id="accountName">Użytkownik</strong><small id="accountStatus">Zaloguj się, aby zapisywać rozmowy</small></div><span>›</span></button>
+
+    <button
+      class="account"
+      id="accountButton"
+      type="button"
+    >
+
+      <div class="avatar">
+        ●
+      </div>
+
+      <div>
+
+        <strong id="accountName">
+          Użytkownik
+        </strong>
+
+        <small id="accountStatus">
+          Zaloguj się, aby zapisywać rozmowy
+        </small>
+
+      </div>
+
+      <span>›</span>
+
+    </button>
+
   </aside>
 
+
   <main class="main">
+
     <section class="tree-counter">
-      <div class="tree-icon">🌳</div>
-      <div class="tree-info">
-        <div class="tree-label">
-          <span>Wiadomości do kolejnego drzewa</span>
-          <strong><span id="messageCount">0</span> / 100</strong>
-        </div>
-        <div class="progress"><div id="progressBar"></div></div>
+
+      <div class="tree-icon">
+        🌳
       </div>
+
+      <div class="tree-info">
+
+        <div class="tree-label">
+
+          <span>
+            Wiadomości do kolejnego drzewa
+          </span>
+
+          <strong>
+            <span id="messageCount">0</span>
+            / 100
+          </strong>
+
+        </div>
+
+        <div class="progress">
+          <div id="progressBar"></div>
+        </div>
+
+      </div>
+
     </section>
 
-    <section class="welcome" id="welcome">
-      <h1>Witaj w <span>LeafGPT</span> 🍃</h1>
-      <p>Rozmawiaj, zdobywaj wiedzę i wspólnie dbajmy o lepszą przyszłość naszej planety.</p>
+
+    <section
+      class="welcome"
+      id="welcome"
+    >
+
+      <h1>
+        Witaj w
+        <span>LeafGPT</span>
+        🍃
+      </h1>
+
+      <p>
+        Rozmawiaj, zdobywaj wiedzę i wspólnie
+        dbajmy o lepszą przyszłość naszej planety.
+      </p>
+
     </section>
 
-    <section class="chat" id="chat"></section>
+
+    <section
+      class="chat"
+      id="chat"
+    ></section>
+
 
     <div class="composer-wrap">
-      <form class="composer" id="chatForm">
-        <textarea id="messageInput" rows="1" placeholder="Napisz do LeafGPT..." aria-label="Wiadomość"></textarea>
+
+      <form
+        class="composer"
+        id="chatForm"
+      >
+
+        <textarea
+          id="messageInput"
+          rows="1"
+          placeholder="Napisz do LeafGPT..."
+          aria-label="Wiadomość"
+        ></textarea>
+
+
         <div class="composer-bottom">
+
           <div class="tools">
-            <button type="button" title="Dodaj plik">⌕</button>
-            <button type="button" title="Internet">◎</button>
+
+            <button
+              type="button"
+              title="Dodaj plik"
+            >
+              ⌕
+            </button>
+
+            <button
+              type="button"
+              title="Internet"
+            >
+              ◎
+            </button>
+
           </div>
-          <button class="send" type="submit" aria-label="Wyślij">➤</button>
+
+
+          <button
+            class="send"
+            type="submit"
+            aria-label="Wyślij"
+          >
+            ➤
+          </button>
+
         </div>
+
       </form>
-      <p class="notice">LeafGPT może popełniać błędy. Sprawdzaj ważne informacje.</p>
+
+
+      <p class="notice">
+        LeafGPT może popełniać błędy.
+        Sprawdzaj ważne informacje.
+      </p>
+
     </div>
+
   </main>
 
-<div class="auth-overlay hidden" id="authOverlay"><div class="auth-modal"><button class="auth-close" id="authClose" type="button">×</button><div class="auth-logo">LeafGPT 🍃</div><h2 id="authTitle">Zaloguj się</h2><p class="auth-subtitle">Zaloguj się, aby później synchronizować rozmowy między urządzeniami.</p><form id="authForm"><label>E-mail</label><input id="authEmail" type="email" autocomplete="email" required placeholder="twoj@email.pl"><label>Hasło</label><input id="authPassword" type="password" minlength="6" required placeholder="Minimum 6 znaków"><button class="auth-submit" id="authSubmit" type="submit">Zaloguj się</button></form><p class="auth-message" id="authMessage"></p><button class="auth-switch" id="authSwitch" type="button">Nie masz konta? Zarejestruj się</button><button class="logout hidden" id="logoutButton" type="button">Wyloguj się</button></div></div>
-<script src="script.js"></script>
+
+  <!-- LOGOWANIE -->
+
+  <div
+    class="auth-overlay hidden"
+    id="authOverlay"
+  >
+
+    <div class="auth-modal">
+
+      <button
+        class="auth-close"
+        id="authClose"
+        type="button"
+      >
+        ×
+      </button>
+
+
+      <div class="auth-logo">
+        LeafGPT 🍃
+      </div>
+
+
+      <h2 id="authTitle">
+        Zaloguj się
+      </h2>
+
+
+      <p class="auth-subtitle">
+        Zaloguj się, aby synchronizować rozmowy
+        między urządzeniami.
+      </p>
+
+
+      <form id="authForm">
+
+        <label>
+          E-mail
+        </label>
+
+        <input
+          id="authEmail"
+          type="email"
+          autocomplete="email"
+          required
+          placeholder="twoj@email.pl"
+        >
+
+
+        <label>
+          Hasło
+        </label>
+
+        <input
+          id="authPassword"
+          type="password"
+          minlength="6"
+          required
+          placeholder="Minimum 6 znaków"
+        >
+
+
+        <button
+          class="auth-submit"
+          id="authSubmit"
+          type="submit"
+        >
+          Zaloguj się
+        </button>
+
+      </form>
+
+
+      <p
+        class="auth-message"
+        id="authMessage"
+      ></p>
+
+
+      <button
+        class="auth-switch"
+        id="authSwitch"
+        type="button"
+      >
+        Nie masz konta? Zarejestruj się
+      </button>
+
+
+      <button
+        class="logout hidden"
+        id="logoutButton"
+        type="button"
+      >
+        Wyloguj się
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <script src="script.js"></script>
+
 </body>
 </html>
