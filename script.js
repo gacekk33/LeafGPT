@@ -1,48 +1,17 @@
-const form = document.getElementById('chatForm');
-const input = document.getElementById('messageInput');
-const chat = document.getElementById('chat');
-const welcome = document.getElementById('welcome');
-const countEl = document.getElementById('messageCount');
-const progress = document.getElementById('progressBar');
-
-let count = 0;
-
-input.addEventListener('input', () => {
-  input.style.height = 'auto';
-  input.style.height = Math.min(input.scrollHeight, 140) + 'px';
-});
-
-input.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    form.requestSubmit();
-  }
-});
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const text = input.value.trim();
-  if (!text) return;
-
-  welcome.style.display = 'none';
-  addMessage(text, 'user');
-
-  count = Math.min(count + 1, 100);
-  countEl.textContent = count;
-  progress.style.width = count + '%';
-
-  input.value = '';
-  input.style.height = 'auto';
-
-  setTimeout(() => {
-    addMessage('To na razie wersja demonstracyjna LeafGPT 🍃 — prawdziwy model AI podłączymy w kolejnym etapie.', 'bot');
-  }, 450);
-});
-
-function addMessage(text, type) {
-  const el = document.createElement('div');
-  el.className = `message ${type}`;
-  el.textContent = text;
-  chat.appendChild(el);
-  chat.scrollTop = chat.scrollHeight;
-}
+const SUPABASE_URL="https://pmshdzafuaadxbkzzvdj.supabase.co";
+const SUPABASE_KEY="sb_publishable_yWRdbcIpWXniK9fe31KchQ_3T0zGdpb";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const form=document.getElementById("chatForm"),input=document.getElementById("messageInput"),chat=document.getElementById("chat"),welcome=document.getElementById("welcome"),countEl=document.getElementById("messageCount"),progress=document.getElementById("progressBar");
+const accountButton=document.getElementById("accountButton"),accountName=document.getElementById("accountName"),accountStatus=document.getElementById("accountStatus"),authOverlay=document.getElementById("authOverlay"),authClose=document.getElementById("authClose"),authForm=document.getElementById("authForm"),authEmail=document.getElementById("authEmail"),authPassword=document.getElementById("authPassword"),authTitle=document.getElementById("authTitle"),authSubmit=document.getElementById("authSubmit"),authSwitch=document.getElementById("authSwitch"),authMessage=document.getElementById("authMessage"),logoutButton=document.getElementById("logoutButton");
+let count=0,mode="login",currentUser=null;
+input.addEventListener("input",()=>{input.style.height="auto";input.style.height=Math.min(input.scrollHeight,140)+"px"});
+input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();form.requestSubmit()}});
+form.addEventListener("submit",e=>{e.preventDefault();const t=input.value.trim();if(!t)return;welcome.style.display="none";addMessage(t,"user");count=Math.min(count+1,100);countEl.textContent=count;progress.style.width=count+"%";input.value="";input.style.height="auto";setTimeout(()=>addMessage("Logowanie Supabase już działa 🍃 Prawdziwy model AI podłączymy później.","bot"),350)});
+function addMessage(t,type){const el=document.createElement("div");el.className="message "+type;el.textContent=t;chat.appendChild(el);chat.scrollTop=chat.scrollHeight}
+accountButton.onclick=()=>{authOverlay.classList.remove("hidden");renderModal()};authClose.onclick=()=>authOverlay.classList.add("hidden");authOverlay.onclick=e=>{if(e.target===authOverlay)authOverlay.classList.add("hidden")};
+authSwitch.onclick=()=>{mode=mode==="login"?"register":"login";authMessage.textContent="";renderModal()};
+function renderModal(){if(currentUser){authTitle.textContent="Twoje konto";authForm.classList.add("hidden");authSwitch.classList.add("hidden");logoutButton.classList.remove("hidden");authMessage.style.color="#75ce80";authMessage.textContent=currentUser.email||"";return}authForm.classList.remove("hidden");authSwitch.classList.remove("hidden");logoutButton.classList.add("hidden");authMessage.style.color="#d47a7a";authTitle.textContent=mode==="login"?"Zaloguj się":"Utwórz konto";authSubmit.textContent=mode==="login"?"Zaloguj się":"Zarejestruj się";authSwitch.textContent=mode==="login"?"Nie masz konta? Zarejestruj się":"Masz już konto? Zaloguj się"}
+authForm.onsubmit=async e=>{e.preventDefault();authMessage.textContent="";authSubmit.disabled=true;const email=authEmail.value.trim(),password=authPassword.value;const r=mode==="register"?await db.auth.signUp({email,password}):await db.auth.signInWithPassword({email,password});authSubmit.disabled=false;if(r.error){authMessage.textContent=r.error.message;renderModal();return}if(mode==="register"&&!r.data.session){authMessage.style.color="#75ce80";authMessage.textContent="Konto utworzone. Sprawdź e-mail i potwierdź rejestrację."}else authOverlay.classList.add("hidden");renderModal()};
+logoutButton.onclick=async()=>{await db.auth.signOut();authOverlay.classList.add("hidden")};
+function renderUser(user){currentUser=user;if(user){accountName.textContent=user.email?.split("@")[0]||"Użytkownik";accountStatus.textContent=user.email||"Zalogowano"}else{accountName.textContent="Użytkownik";accountStatus.textContent="Zaloguj się, aby zapisywać rozmowy"}renderModal()}
+db.auth.getUser().then(({data})=>renderUser(data.user));db.auth.onAuthStateChange((_e,s)=>renderUser(s?.user??null));
