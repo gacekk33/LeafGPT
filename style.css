@@ -21,3 +21,8 @@
 /* INTRO DISABLED */
 .app-shell{filter:none!important;transform:none!important;}
 .intro{display:none!important;}
+
+/* STATYSTYKI */
+.nav button.active{background:#25292c;color:#fff}
+.stats-page{width:min(980px,calc(100% - 60px));height:100%;overflow:auto;padding:105px 0 150px;scrollbar-width:none}.stats-page::-webkit-scrollbar{display:none}.stats-header h1{font-size:36px;margin:0 0 8px}.stats-header p{color:#92989c;margin:0 0 28px}.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.stat-card{background:#1a1d1f;border:1px solid #292d30;border-radius:18px;padding:22px}.stat-card .stat-icon{font-size:24px}.stat-card strong{display:block;font-size:32px;margin:16px 0 6px}.stat-card span{color:#8e9498;font-size:13px}.stats-wide{grid-column:1/-1}.stats-progress-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:13px}.stats-progress-head strong{font-size:18px;margin:0}.stats-progress-head span{color:#75d180}.stats-note{margin-top:14px;color:#7f8589;font-size:12px;line-height:1.5}
+@media(max-width:760px){.stats-page{width:calc(100% - 24px);padding-top:100px}.stats-grid{grid-template-columns:1fr}.stats-wide{grid-column:auto}.stats-header h1{font-size:29px}}
