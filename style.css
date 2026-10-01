@@ -328,3 +328,53 @@ button:active{transform:scale(.96)}
   .welcome-logo .leaf-logo-img{width:92px;height:92px}
   .welcome-logo{width:96px!important;height:90px!important}
 }
+
+
+/* =========================================================
+   LOGO FIX — zgodnie ze screenami
+   ========================================================= */
+
+/* Sidebar: wraca zwykła emotka liścia */
+.brand-leaf-emoji{
+  display:inline-block;
+  margin-left:3px;
+  font-size:21px;
+  line-height:1;
+  vertical-align:-2px;
+  filter:none;
+}
+
+/* Środek: logo-leaf.png zastępuje również osobny napis LeafGPT */
+.welcome-v2 .welcome-logo{
+  width:230px!important;
+  height:170px!important;
+  margin:0 auto 4px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.welcome-v2 .welcome-logo .leaf-logo-img{
+  width:220px!important;
+  height:165px!important;
+  max-width:none!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 10px 26px var(--accent-soft-2))!important;
+}
+
+/* stary tekst pod logo nie jest już potrzebny */
+.welcome-v2>h1{display:none!important}
+
+/* zachowaj sensowny odstęp opisu od większego logo */
+.welcome-v2>p{margin-top:0!important}
+
+@media(max-width:760px){
+  .welcome-v2 .welcome-logo{
+    width:180px!important;
+    height:135px!important;
+  }
+  .welcome-v2 .welcome-logo .leaf-logo-img{
+    width:175px!important;
+    height:130px!important;
+  }
+  .brand-leaf-emoji{font-size:19px}
+}

@@ -5,11 +5,11 @@
 <meta name="theme-color" content="#111315"><title>LeafGPT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=logo-leaf-1"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="style.css?v=logo-fix-2"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
 <div class="app-shell">
 <aside class="sidebar">
-<div class="brand-row"><div class="brand">LeafGPT <img src="logo-leaf.png" alt="Logo LeafGPT" class="leaf-logo-img"></div><div class="brand-actions"><button class="icon-btn" id="chatSearchButton" type="button" title="Szukaj czatów">⌕</button><button class="icon-btn" id="newChatIcon" type="button" title="Nowy czat">✎</button></div></div>
+<div class="brand-row"><div class="brand">LeafGPT <span class="brand-leaf-emoji">🍃</span></div><div class="brand-actions"><button class="icon-btn" id="chatSearchButton" type="button" title="Szukaj czatów">⌕</button><button class="icon-btn" id="newChatIcon" type="button" title="Nowy czat">✎</button></div></div>
 <div class="chat-search-panel" id="chatSearchPanel"><span>⌕</span><input id="chatSearchInput" type="search" placeholder="Szukaj w rozmowach..." autocomplete="off"><button id="chatSearchClose" type="button">×</button></div>
 <button class="new-chat" id="newChatButton" type="button">◯ <span>Nowy czat</span></button>
 <nav class="nav"><button id="discoverButton" type="button">◉ <span>Odkrywaj</span></button><button id="statsButton" type="button">▥ <span>Statystyki</span></button><button id="impactButton" type="button">♧ <span>Wpływ na planetę</span></button><button id="settingsButton" type="button">⚙ <span>Ustawienia</span></button></nav>
@@ -20,7 +20,6 @@
 <section class="tree-counter"><div class="tree-icon">🌳</div><div class="tree-info"><div class="tree-label"><span>Wiadomości do kolejnego drzewa</span><strong><span id="messageCount">0</span> / 100</strong></div><div class="progress"><div id="progressBar"></div></div></div></section>
 <section class="welcome welcome-v2" id="welcome">
       <div class="welcome-logo"><img src="logo-leaf.png" alt="Logo LeafGPT" class="leaf-logo-img"></div>
-      <h1>Leaf<span>GPT</span></h1>
       <p>Twój asystent AI dla lepszej przyszłości.</p>
       <div class="welcome-grid">
         <button type="button" class="welcome-card" data-prompt="Wytłumacz mi trudny temat w prosty sposób"><b>📚 Nauka</b><span>Wytłumacz mi trudny temat w prosty sposób</span></button>
@@ -148,4 +147,4 @@
 <div class="composer-wrap"><form class="composer" id="chatForm"><textarea id="messageInput" rows="1" placeholder="Napisz do LeafGPT..."></textarea><div class="composer-bottom"><div class="tools"><button id="inChatSearchButton" type="button" title="Szukaj w tym czacie">⌕</button><button type="button">◎</button></div><button class="send" type="submit">➤</button></div></form><p class="notice">LeafGPT może popełniać błędy. Sprawdzaj ważne informacje.</p></div>
 </main></div>
 <div class="auth-overlay hidden" id="authOverlay"><div class="auth-modal"><button class="auth-close" id="authClose">×</button><div class="auth-logo">LeafGPT 🍃</div><h2 id="authTitle">Zaloguj się</h2><p class="auth-subtitle">Zaloguj się, aby synchronizować rozmowy między urządzeniami.</p><form id="authForm"><label>E-mail</label><input id="authEmail" type="email" required><label>Hasło</label><input id="authPassword" type="password" minlength="6" required><button class="auth-submit" id="authSubmit">Zaloguj się</button></form><p class="auth-message" id="authMessage"></p><button class="auth-switch" id="authSwitch">Nie masz konta? Zarejestruj się</button><button class="logout hidden" id="logoutButton">Wyloguj się</button></div></div>
-<script src="script.js?v=logo-leaf-1"></script></body></html>
+<script src="script.js?v=logo-fix-2"></script></body></html>
