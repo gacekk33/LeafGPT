@@ -288,3 +288,31 @@ button:active{transform:scale(.96)}
   :root[data-theme="system"] .history-chat,:root[data-theme="system"] .settings-card,:root[data-theme="system"] .composer{background:#fff!important;border-color:#dde2de!important;color:#202622!important}
   :root[data-theme="system"] #messageInput{color:#1d231f!important}
 }
+
+
+/* =========================================================
+   MOCKUP STYLE V3 — logo + start screen closer to concept
+   ========================================================= */
+.leaf-logo-mark{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.18em;color:var(--accent);filter:drop-shadow(0 0 8px var(--accent-soft-2))}
+.brand{display:flex;align-items:center;gap:7px}.brand .leaf-logo-mark{width:28px;height:28px;flex:0 0 28px}
+.welcome-v2{width:min(720px,calc(100% - 50px));text-align:center;display:flex;flex-direction:column;align-items:center}
+.welcome-logo{width:94px;height:94px;display:grid;place-items:center;margin:0 auto 7px}.welcome-logo .leaf-logo-mark{width:88px;height:88px;color:var(--accent);filter:drop-shadow(0 12px 22px var(--accent-soft-2))}
+.welcome-v2 h1{font-size:42px;letter-spacing:-2px;margin:0 0 6px;color:#f1f3f2}.welcome-v2 h1 span{color:var(--accent)}
+.welcome-v2>p{margin:0 0 30px;color:#7f878b;font-size:13px}
+.welcome-grid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.welcome-card{text-align:left;min-height:98px;padding:18px;border-radius:16px;border:1px solid #292f31;background:#191d1f;color:#eef1ef;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:8px;box-shadow:0 7px 24px #00000012;transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease}
+.welcome-card:hover{transform:translateY(-2px);border-color:var(--accent-border);background:linear-gradient(135deg,var(--accent-soft),#191d1f 65%);box-shadow:0 10px 28px #0003}
+.welcome-card b{font-size:13px;color:#edf0ee}.welcome-card span{font-size:11px;line-height:1.5;color:#858d91}
+:root[data-theme="light"] .leaf-logo-mark{color:var(--accent)}
+:root[data-theme="light"] .welcome-v2 h1{color:#161b18!important}
+:root[data-theme="light"] .welcome-v2>p{color:#68716c!important}
+:root[data-theme="light"] .welcome-card{background:#fff!important;border-color:#e0e5e1!important;color:#1c221e!important;box-shadow:0 7px 22px #1720190b}
+:root[data-theme="light"] .welcome-card:hover{border-color:var(--accent-border)!important;background:linear-gradient(135deg,var(--accent-soft),#fff 68%)!important}
+:root[data-theme="light"] .welcome-card b{color:#202622!important}
+:root[data-theme="light"] .welcome-card span{color:#68716c!important}
+@media(prefers-color-scheme:light){
+  :root[data-theme="system"] .welcome-v2 h1{color:#161b18!important}
+  :root[data-theme="system"] .welcome-card{background:#fff!important;border-color:#e0e5e1!important;color:#1c221e!important}
+  :root[data-theme="system"] .welcome-card b{color:#202622!important}
+}
+@media(max-width:760px){.welcome-grid{grid-template-columns:1fr}.welcome-logo{width:74px;height:74px}.welcome-logo .leaf-logo-mark{width:70px;height:70px}.welcome-v2 h1{font-size:34px}}

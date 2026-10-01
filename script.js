@@ -31,6 +31,15 @@ settingsLogout?.addEventListener("click",()=>logoutButton?.click());
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>{if(leafTheme==="system")applyAppearance()});
 applyAppearance();
 
+document.addEventListener("click",e=>{
+  const card=e.target.closest(".welcome-card[data-prompt]");
+  if(!card)return;
+  messageInput.value=card.dataset.prompt||"";
+  messageInput.focus();
+  messageInput.dispatchEvent(new Event("input",{bubbles:true}));
+});
+
+
 
 const historySection=$("historySection"),historyListWrap=$("historyListWrap"),historyToggle=$("historyToggle"),
 chatSearchButton=$("chatSearchButton"),chatSearchPanel=$("chatSearchPanel"),chatSearchInput=$("chatSearchInput"),chatSearchClose=$("chatSearchClose"),

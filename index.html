@@ -5,11 +5,16 @@
 <meta name="theme-color" content="#111315"><title>LeafGPT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=themes-2"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="style.css?v=mockup-1"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
 <div class="app-shell">
 <aside class="sidebar">
-<div class="brand-row"><div class="brand">LeafGPT <span>🍃</span></div><div class="brand-actions"><button class="icon-btn" id="chatSearchButton" type="button" title="Szukaj czatów">⌕</button><button class="icon-btn" id="newChatIcon" type="button" title="Nowy czat">✎</button></div></div>
+<div class="brand-row"><div class="brand">LeafGPT <svg class="leaf-logo-mark" viewBox="0 0 64 64" aria-hidden="true">
+<path d="M34 33C35 18 45 9 59 7c-1 15-8 27-23 29-4 1-6 0-8-1 1-1 3-2 6-2Z" fill="currentColor"/>
+<path d="M29 38C25 24 14 18 4 19c2 15 10 25 24 25 4 0 7-1 9-2-2-2-5-3-8-4Z" fill="currentColor" opacity=".78"/>
+<path d="M20 49c10-15 22-24 35-31M14 13c7 0 12 2 16 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+<circle cx="11" cy="13" r="3" fill="none" stroke="currentColor" stroke-width="2.5"/>
+</svg></div><div class="brand-actions"><button class="icon-btn" id="chatSearchButton" type="button" title="Szukaj czatów">⌕</button><button class="icon-btn" id="newChatIcon" type="button" title="Nowy czat">✎</button></div></div>
 <div class="chat-search-panel" id="chatSearchPanel"><span>⌕</span><input id="chatSearchInput" type="search" placeholder="Szukaj w rozmowach..." autocomplete="off"><button id="chatSearchClose" type="button">×</button></div>
 <button class="new-chat" id="newChatButton" type="button">◯ <span>Nowy czat</span></button>
 <nav class="nav"><button id="discoverButton" type="button">◉ <span>Odkrywaj</span></button><button id="statsButton" type="button">▥ <span>Statystyki</span></button><button id="impactButton" type="button">♧ <span>Wpływ na planetę</span></button><button id="settingsButton" type="button">⚙ <span>Ustawienia</span></button></nav>
@@ -18,7 +23,22 @@
 </aside>
 <main class="main">
 <section class="tree-counter"><div class="tree-icon">🌳</div><div class="tree-info"><div class="tree-label"><span>Wiadomości do kolejnego drzewa</span><strong><span id="messageCount">0</span> / 100</strong></div><div class="progress"><div id="progressBar"></div></div></div></section>
-<section class="welcome" id="welcome"><h1>Witaj w <span>LeafGPT</span> 🍃</h1><p>Rozmawiaj, zdobywaj wiedzę i wspólnie dbajmy o lepszą przyszłość naszej planety.</p></section>
+<section class="welcome welcome-v2" id="welcome">
+      <div class="welcome-logo"><svg class="leaf-logo-mark" viewBox="0 0 64 64" aria-hidden="true">
+<path d="M34 33C35 18 45 9 59 7c-1 15-8 27-23 29-4 1-6 0-8-1 1-1 3-2 6-2Z" fill="currentColor"/>
+<path d="M29 38C25 24 14 18 4 19c2 15 10 25 24 25 4 0 7-1 9-2-2-2-5-3-8-4Z" fill="currentColor" opacity=".78"/>
+<path d="M20 49c10-15 22-24 35-31M14 13c7 0 12 2 16 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+<circle cx="11" cy="13" r="3" fill="none" stroke="currentColor" stroke-width="2.5"/>
+</svg></div>
+      <h1>Leaf<span>GPT</span></h1>
+      <p>Twój asystent AI dla lepszej przyszłości.</p>
+      <div class="welcome-grid">
+        <button type="button" class="welcome-card" data-prompt="Wytłumacz mi trudny temat w prosty sposób"><b>📚 Nauka</b><span>Wytłumacz mi trudny temat w prosty sposób</span></button>
+        <button type="button" class="welcome-card" data-prompt="Pomóż mi wymyślić coś kreatywnego"><b>💡 Pomysły</b><span>Pomóż mi wymyślić coś kreatywnego</span></button>
+        <button type="button" class="welcome-card" data-prompt="Pomóż mi stworzyć projekt od zera"><b>💻 Programowanie</b><span>Pomóż mi stworzyć projekt od zera</span></button>
+        <button type="button" class="welcome-card" data-prompt="Opowiedz mi ciekawostkę, której prawdopodobnie nie znam"><b>💭 Ciekawostki</b><span>Opowiedz mi coś interesującego</span></button>
+      </div>
+    </section>
 <div class="inchat-search" id="inChatSearch"><span>⌕</span><input id="inChatSearchInput" type="search" placeholder="Szukaj w tym czacie..." autocomplete="off"><span class="search-count" id="inChatSearchCount">0 / 0</span><button id="searchPrev" type="button" title="Poprzedni wynik">↑</button><button id="searchNext" type="button" title="Następny wynik">↓</button><button id="inChatSearchClose" type="button" title="Zamknij">×</button></div>
 <section class="chat" id="chat"></section>
 
@@ -138,4 +158,4 @@
 <div class="composer-wrap"><form class="composer" id="chatForm"><textarea id="messageInput" rows="1" placeholder="Napisz do LeafGPT..."></textarea><div class="composer-bottom"><div class="tools"><button id="inChatSearchButton" type="button" title="Szukaj w tym czacie">⌕</button><button type="button">◎</button></div><button class="send" type="submit">➤</button></div></form><p class="notice">LeafGPT może popełniać błędy. Sprawdzaj ważne informacje.</p></div>
 </main></div>
 <div class="auth-overlay hidden" id="authOverlay"><div class="auth-modal"><button class="auth-close" id="authClose">×</button><div class="auth-logo">LeafGPT 🍃</div><h2 id="authTitle">Zaloguj się</h2><p class="auth-subtitle">Zaloguj się, aby synchronizować rozmowy między urządzeniami.</p><form id="authForm"><label>E-mail</label><input id="authEmail" type="email" required><label>Hasło</label><input id="authPassword" type="password" minlength="6" required><button class="auth-submit" id="authSubmit">Zaloguj się</button></form><p class="auth-message" id="authMessage"></p><button class="auth-switch" id="authSwitch">Nie masz konta? Zarejestruj się</button><button class="logout hidden" id="logoutButton">Wyloguj się</button></div></div>
-<script src="script.js?v=themes-2"></script></body></html>
+<script src="script.js?v=mockup-1"></script></body></html>
