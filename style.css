@@ -378,3 +378,34 @@ button:active{transform:scale(.96)}
   }
   .brand-leaf-emoji{font-size:19px}
 }
+
+/* FIX: kontrast odpowiedzi LeafGPT w jasnym/systemowym motywie.
+   JS używa klasy .bot (nie .assistant). */
+:root[data-theme="light"] .message.bot{
+  background:#ffffff!important;
+  color:#202622!important;
+  border:1px solid #dfe4e0!important;
+  box-shadow:0 3px 12px rgba(23,32,25,.07)!important;
+}
+:root[data-theme="light"] .message.bot.thinking{
+  color:#68716c!important;
+}
+:root[data-theme="light"] .message.user{
+  color:#202622!important;
+  background:var(--accent-soft)!important;
+  border:1px solid var(--accent-border)!important;
+}
+@media(prefers-color-scheme:light){
+  :root[data-theme="system"] .message.bot{
+    background:#ffffff!important;
+    color:#202622!important;
+    border:1px solid #dfe4e0!important;
+    box-shadow:0 3px 12px rgba(23,32,25,.07)!important;
+  }
+  :root[data-theme="system"] .message.bot.thinking{color:#68716c!important}
+  :root[data-theme="system"] .message.user{
+    color:#202622!important;
+    background:var(--accent-soft)!important;
+    border:1px solid var(--accent-border)!important;
+  }
+}
