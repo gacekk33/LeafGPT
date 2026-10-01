@@ -2,6 +2,36 @@ const SUPABASE_URL="https://pmshdzafuaadxbkzzvdj.supabase.co",SUPABASE_KEY="sb_p
 const $=id=>document.getElementById(id),form=$("chatForm"),input=$("messageInput"),chat=$("chat"),welcome=$("welcome"),countEl=$("messageCount"),progress=$("progressBar"),historyList=$("historyList"),accountButton=$("accountButton"),accountName=$("accountName"),accountStatus=$("accountStatus"),authOverlay=$("authOverlay"),authClose=$("authClose"),authForm=$("authForm"),authEmail=$("authEmail"),authPassword=$("authPassword"),authTitle=$("authTitle"),authSubmit=$("authSubmit"),authSwitch=$("authSwitch"),authMessage=$("authMessage"),logoutButton=$("logoutButton"),statsPage=$("statsPage"),statsButton=$("statsButton"),statsMessages=$("statsMessages"),statsTrees=$("statsTrees"),statsRemaining=$("statsRemaining"),statsProgressText=$("statsProgressText"),statsProgressBar=$("statsProgressBar"),impactPage=$("impactPage"),impactButton=$("impactButton"),discoverPage=$("discoverPage"),discoverButton=$("discoverButton"),surpriseButton=$("surpriseButton"),composerWrap=document.querySelector(".composer-wrap"),treeCounter=document.querySelector(".tree-counter");
 let currentUser=null,currentChatId=null,messages=[],generating=false,mode="login",totalMessages=0,treesPlanted=0,chatsLoadVersion=0,currentView="chat";
 
+const settingsButton=$("settingsButton"),settingsPage=$("settingsPage"),themePicker=$("themePicker"),accentPicker=$("accentPicker"),
+settingsAccountName=$("settingsAccountName"),settingsAccountEmail=$("settingsAccountEmail"),settingsLogout=$("settingsLogout");
+const THEME_KEY="leafgpt_theme",ACCENT_KEY="leafgpt_accent";
+let leafTheme=localStorage.getItem(THEME_KEY)||"dark",leafAccent=localStorage.getItem(ACCENT_KEY)||"green";
+
+function applyAppearance(){
+  document.documentElement.dataset.theme=leafTheme;
+  document.documentElement.dataset.accent=leafAccent;
+  document.querySelectorAll("[data-theme]").forEach(b=>b.classList.toggle("selected",b.dataset.theme===leafTheme));
+  document.querySelectorAll("[data-accent]").forEach(b=>b.classList.toggle("selected",b.dataset.accent===leafAccent));
+}
+function showSettingsView(){
+  currentView="settings";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");
+  statsPage.classList.add("hidden");impactPage?.classList.add("hidden");discoverPage?.classList.add("hidden");settingsPage.classList.remove("hidden");
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));settingsButton.classList.add("active");updateSettingsAccount();
+}
+function updateSettingsAccount(){
+  const email=currentUser?.email||"—";
+  settingsAccountEmail.textContent=email;
+  settingsAccountName.textContent=currentUser?(email.split("@")[0]||"Konto LeafGPT"):"Nie zalogowano";
+  settingsLogout.style.display=currentUser?"":"none";
+}
+settingsButton?.addEventListener("click",showSettingsView);
+themePicker?.addEventListener("click",e=>{const b=e.target.closest("[data-theme]");if(!b)return;leafTheme=b.dataset.theme;localStorage.setItem(THEME_KEY,leafTheme);applyAppearance()});
+accentPicker?.addEventListener("click",e=>{const b=e.target.closest("[data-accent]");if(!b)return;leafAccent=b.dataset.accent;localStorage.setItem(ACCENT_KEY,leafAccent);applyAppearance()});
+settingsLogout?.addEventListener("click",()=>logoutButton?.click());
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>{if(leafTheme==="system")applyAppearance()});
+applyAppearance();
+
+
 const historySection=$("historySection"),historyListWrap=$("historyListWrap"),historyToggle=$("historyToggle"),
 chatSearchButton=$("chatSearchButton"),chatSearchPanel=$("chatSearchPanel"),chatSearchInput=$("chatSearchInput"),chatSearchClose=$("chatSearchClose"),
 inChatSearch=$("inChatSearch"),inChatSearchButton=$("inChatSearchButton"),inChatSearchInput=$("inChatSearchInput"),inChatSearchClose=$("inChatSearchClose"),
@@ -103,10 +133,10 @@ document.addEventListener("keydown",e=>{
 
 input.addEventListener("input",()=>{input.style.height="auto";input.style.height=Math.min(input.scrollHeight,140)+"px"});input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();if(!generating)form.requestSubmit()}});
 $("newChatButton")?.addEventListener("click",()=>{showChatView();startNewChat()});$("newChatIcon")?.addEventListener("click",()=>{showChatView();startNewChat()});statsButton?.addEventListener("click",showStatsView);impactButton?.addEventListener("click",showImpactView);discoverButton?.addEventListener("click",showDiscoverView);
-function showChatView(){currentView="chat";statsPage.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.add("hidden");chat.classList.remove("hidden");composerWrap.classList.remove("hidden");treeCounter.classList.remove("hidden");if(!messages.length)welcome.style.display="";statsButton.classList.remove("active");impactButton.classList.remove("active");discoverButton.classList.remove("active")}
-function showStatsView(){currentView="stats";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.add("hidden");statsPage.classList.remove("hidden");statsButton.classList.add("active");impactButton.classList.remove("active");discoverButton.classList.remove("active");updateCounters()}
-function showImpactView(){currentView="impact";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");statsPage.classList.add("hidden");discoverPage.classList.add("hidden");impactPage.classList.remove("hidden");statsButton.classList.remove("active");impactButton.classList.add("active");discoverButton.classList.remove("active")}
-function showDiscoverView(){currentView="discover";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");statsPage.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.remove("hidden");statsButton.classList.remove("active");impactButton.classList.remove("active");discoverButton.classList.add("active")}
+function showChatView(){settingsPage?.classList.add("hidden");settingsButton?.classList.remove("active");currentView="chat";statsPage.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.add("hidden");chat.classList.remove("hidden");composerWrap.classList.remove("hidden");treeCounter.classList.remove("hidden");if(!messages.length)welcome.style.display="";statsButton.classList.remove("active");impactButton.classList.remove("active");discoverButton.classList.remove("active")}
+function showStatsView(){settingsPage?.classList.add("hidden");settingsButton?.classList.remove("active");currentView="stats";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.add("hidden");statsPage.classList.remove("hidden");statsButton.classList.add("active");impactButton.classList.remove("active");discoverButton.classList.remove("active");updateCounters()}
+function showImpactView(){settingsPage?.classList.add("hidden");settingsButton?.classList.remove("active");currentView="impact";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");statsPage.classList.add("hidden");discoverPage.classList.add("hidden");impactPage.classList.remove("hidden");statsButton.classList.remove("active");impactButton.classList.add("active");discoverButton.classList.remove("active")}
+function showDiscoverView(){settingsPage?.classList.add("hidden");settingsButton?.classList.remove("active");currentView="discover";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");statsPage.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.remove("hidden");statsButton.classList.remove("active");impactButton.classList.remove("active");discoverButton.classList.add("active")}
 function useDiscoverPrompt(text){showChatView();startNewChat();input.value=text;input.dispatchEvent(new Event("input"));input.focus()}
 document.querySelectorAll("[data-prompt]").forEach(btn=>btn.addEventListener("click",()=>useDiscoverPrompt(btn.dataset.prompt)));
 const surprisePrompts=["Naucz mnie czegoś zaskakującego o kosmosie.","Opowiedz mi o technologii, która może zmienić przyszłość.","Daj mi nietypowy pomysł na kreatywny projekt.","Naucz mnie ciekawej rzeczy o samochodach w 5 minut.","Opowiedz mi o dziwnym zjawisku naukowym i wyjaśnij je prosto.","Daj mi ciekawy temat, o którym prawdopodobnie niewiele wiem."];

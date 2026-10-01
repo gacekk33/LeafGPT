@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#111315"><title>LeafGPT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=search-1"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="style.css?v=settings-1"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
 <div class="app-shell">
 <aside class="sidebar">
@@ -94,7 +94,48 @@
   <div class="impact-footer"><div>🍃</div><h2>Mała wiadomość. Większy cel.</h2><p>Każda rozmowa może być początkiem czegoś większego.</p></div>
 </section>
 
+
+<section class="settings-page hidden" id="settingsPage">
+  <div class="settings-head">
+    <span class="settings-kicker">USTAWIENIA</span>
+    <h1>Dostosuj LeafGPT</h1>
+    <p>Ustaw wygląd aplikacji i sprawdź informacje o swoim koncie.</p>
+  </div>
+
+  <div class="settings-card">
+    <div class="settings-card-title"><div class="settings-icon">◐</div><div><h2>Wygląd</h2><p>Wybierz motyw i kolor akcentu interfejsu.</p></div></div>
+    <div class="setting-row">
+      <div><strong>Motyw</strong><span>Zmień wygląd całej aplikacji.</span></div>
+      <div class="theme-picker" id="themePicker">
+        <button type="button" data-theme="dark">🌙 Ciemny</button>
+        <button type="button" data-theme="light">☀️ Jasny</button>
+        <button type="button" data-theme="system">◐ Systemowy</button>
+      </div>
+    </div>
+    <div class="setting-row accent-row">
+      <div><strong>Kolor akcentu</strong><span>Podstawowy kolor wyróżnień LeafGPT.</span></div>
+      <div class="accent-picker" id="accentPicker">
+        <button type="button" data-accent="green" title="Zielony" aria-label="Zielony"></button>
+        <button type="button" data-accent="blue" title="Niebieski" aria-label="Niebieski"></button>
+        <button type="button" data-accent="purple" title="Fioletowy" aria-label="Fioletowy"></button>
+        <button type="button" data-accent="red" title="Czerwony" aria-label="Czerwony"></button>
+        <button type="button" data-accent="orange" title="Pomarańczowy" aria-label="Pomarańczowy"></button>
+        <button type="button" data-accent="pink" title="Różowy" aria-label="Różowy"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <div class="settings-card-title"><div class="settings-icon">◎</div><div><h2>Konto</h2><p>Informacje o aktualnie zalogowanym koncie.</p></div></div>
+    <div class="account-settings-box">
+      <div class="account-settings-avatar">●</div>
+      <div class="account-settings-info"><strong id="settingsAccountName">Nie zalogowano</strong><span id="settingsAccountEmail">—</span></div>
+      <button type="button" class="settings-logout" id="settingsLogout">Wyloguj się</button>
+    </div>
+  </div>
+</section>
+
 <div class="composer-wrap"><form class="composer" id="chatForm"><textarea id="messageInput" rows="1" placeholder="Napisz do LeafGPT..."></textarea><div class="composer-bottom"><div class="tools"><button id="inChatSearchButton" type="button" title="Szukaj w tym czacie">⌕</button><button type="button">◎</button></div><button class="send" type="submit">➤</button></div></form><p class="notice">LeafGPT może popełniać błędy. Sprawdzaj ważne informacje.</p></div>
 </main></div>
 <div class="auth-overlay hidden" id="authOverlay"><div class="auth-modal"><button class="auth-close" id="authClose">×</button><div class="auth-logo">LeafGPT 🍃</div><h2 id="authTitle">Zaloguj się</h2><p class="auth-subtitle">Zaloguj się, aby synchronizować rozmowy między urządzeniami.</p><form id="authForm"><label>E-mail</label><input id="authEmail" type="email" required><label>Hasło</label><input id="authPassword" type="password" minlength="6" required><button class="auth-submit" id="authSubmit">Zaloguj się</button></form><p class="auth-message" id="authMessage"></p><button class="auth-switch" id="authSwitch">Nie masz konta? Zarejestruj się</button><button class="logout hidden" id="logoutButton">Wyloguj się</button></div></div>
-<script src="script.js?v=search-1"></script></body></html>
+<script src="script.js?v=settings-1"></script></body></html>
