@@ -80,3 +80,211 @@ button:active{transform:scale(.96)}
 :root[data-theme="light"] body{background:#f4f5f4;color:#151918}:root[data-theme="light"] .sidebar{background:#ecefed;border-color:#d9ddda}:root[data-theme="light"] .main{background:#f7f8f7}:root[data-theme="light"] .settings-card,:root[data-theme="light"] .composer,:root[data-theme="light"] .history-chat{background:#fff;border-color:#dfe3e0}:root[data-theme="light"] .settings-card-title,:root[data-theme="light"] .setting-row{border-color:#e3e6e4}:root[data-theme="light"] .settings-head p,:root[data-theme="light"] .settings-card-title p,:root[data-theme="light"] .setting-row span,:root[data-theme="light"] .account-settings-info span{color:#68716c}:root[data-theme="light"] .theme-picker{background:#eef1ef;border-color:#d9dedb}
 @media(prefers-color-scheme:light){:root[data-theme="system"] body{background:#f4f5f4;color:#151918}:root[data-theme="system"] .sidebar{background:#ecefed;border-color:#d9ddda}:root[data-theme="system"] .main{background:#f7f8f7}:root[data-theme="system"] .settings-card,:root[data-theme="system"] .composer,:root[data-theme="system"] .history-chat{background:#fff;border-color:#dfe3e0}}
 @media(max-width:760px){.settings-page{width:calc(100% - 24px);padding-top:90px}.setting-row{align-items:flex-start;flex-direction:column}.theme-picker{width:100%;overflow:auto}.account-settings-box{flex-wrap:wrap}.settings-logout{width:100%}}
+
+
+/* =========================================================
+   LEAFGPT THEMES V2 — czytelny jasny motyw + pełny akcent
+   ========================================================= */
+
+/* Accent applies to important text, icons and controls */
+:root{
+  --accent:#75d480;
+  --accent-strong:#55c966;
+  --accent-soft:#75d4801c;
+  --accent-soft-2:#75d48030;
+  --accent-border:#75d48055;
+}
+:root[data-accent="blue"]{--accent:#67a9ff;--accent-strong:#438ff4;--accent-soft:#67a9ff1c;--accent-soft-2:#67a9ff30;--accent-border:#67a9ff55}
+:root[data-accent="purple"]{--accent:#ad7cff;--accent-strong:#9258f4;--accent-soft:#ad7cff1c;--accent-soft-2:#ad7cff30;--accent-border:#ad7cff55}
+:root[data-accent="red"]{--accent:#f06d72;--accent-strong:#e45159;--accent-soft:#f06d721c;--accent-soft-2:#f06d7230;--accent-border:#f06d7255}
+:root[data-accent="orange"]{--accent:#f0a24d;--accent-strong:#e58a27;--accent-soft:#f0a24d1c;--accent-soft-2:#f0a24d30;--accent-border:#f0a24d55}
+:root[data-accent="pink"]{--accent:#ef79b5;--accent-strong:#e5559d;--accent-soft:#ef79b51c;--accent-soft-2:#ef79b530;--accent-border:#ef79b555}
+
+/* Accent-coloured interface text */
+.brand span,
+.nav-item span,
+.settings-kicker,
+.impact-kicker,
+.impact-copy>span,
+.discover-kicker,
+.stats-label,
+.tree-counter strong,
+.settings-icon,
+.account-settings-avatar,
+.impact-hero h1 span,
+.impact-conversion strong,
+.impact-numbers b,
+.discover-card-icon{
+  color:var(--accent)!important;
+}
+.nav-item:hover,
+.nav-item.active{
+  color:var(--accent)!important;
+}
+.nav-item.active{
+  background:var(--accent-soft)!important;
+  box-shadow:inset 3px 0 0 var(--accent);
+}
+.icon-btn:hover,
+.tools button:hover,
+.inchat-search button:hover{
+  color:var(--accent)!important;
+  border-color:var(--accent-border)!important;
+}
+.progress>span,.stats-progress>span{background:var(--accent)!important}
+.message.user{border-color:var(--accent-border)}
+.message.search-hit{outline-color:var(--accent)!important;box-shadow:0 0 0 3px var(--accent-soft)!important}
+.message.search-current{box-shadow:0 0 0 4px var(--accent-soft-2),0 10px 30px #0004!important}
+.impact-badge,.discover-badge{color:var(--accent)!important;border-color:var(--accent-border)!important;background:var(--accent-soft)!important}
+.impact-icon,.discover-card-icon,.settings-icon{background:var(--accent-soft)!important;border-color:var(--accent-border)!important}
+.theme-picker button.selected{background:var(--accent-soft)!important;color:var(--accent)!important;box-shadow:inset 0 0 0 1px var(--accent-border)!important}
+
+/* Better light theme */
+:root[data-theme="light"]{
+  color-scheme:light;
+}
+:root[data-theme="light"] body{
+  background:#f7f8f7!important;
+  color:#171b19!important;
+}
+:root[data-theme="light"] .app-shell{background:#f7f8f7!important}
+:root[data-theme="light"] .sidebar{
+  background:#f0f2f0!important;
+  border-color:#dce1dd!important;
+  box-shadow:8px 0 30px #18201a08;
+}
+:root[data-theme="light"] .main{background:#fafbfa!important}
+:root[data-theme="light"] .brand{color:#161a18!important}
+:root[data-theme="light"] .nav-item{
+  color:#343b37!important;
+}
+:root[data-theme="light"] .nav-item:hover{
+  background:var(--accent-soft)!important;
+  color:var(--accent-strong)!important;
+}
+:root[data-theme="light"] .nav-item.active{
+  color:var(--accent-strong)!important;
+  background:var(--accent-soft-2)!important;
+}
+:root[data-theme="light"] .divider{background:#dfe3e0!important}
+:root[data-theme="light"] .history-heading p,
+:root[data-theme="light"] .history>p{color:#68716c!important}
+:root[data-theme="light"] .history-chat{
+  background:#fff!important;
+  border-color:#dde2de!important;
+  color:#222824!important;
+  box-shadow:0 2px 9px #17201908;
+}
+:root[data-theme="light"] .history-chat:hover{
+  border-color:var(--accent-border)!important;
+  background:var(--accent-soft)!important;
+}
+:root[data-theme="light"] .history-chat-title{color:#252b27!important}
+:root[data-theme="light"] .account{
+  background:#edf0ee!important;
+  border-color:#d9dfda!important;
+}
+:root[data-theme="light"] .account strong{color:#1c211e!important}
+:root[data-theme="light"] .account small{color:#69726d!important}
+:root[data-theme="light"] .icon-btn{
+  background:#f8faf8!important;
+  border-color:#d8ded9!important;
+  color:#39413c!important;
+}
+:root[data-theme="light"] .icon-btn:hover{
+  background:var(--accent-soft)!important;
+  color:var(--accent-strong)!important;
+  border-color:var(--accent-border)!important;
+}
+:root[data-theme="light"] .welcome h1,
+:root[data-theme="light"] .settings-head h1,
+:root[data-theme="light"] .impact-hero h1,
+:root[data-theme="light"] .discover-head h1,
+:root[data-theme="light"] .stats-page h1{color:#151917!important}
+:root[data-theme="light"] .welcome p,
+:root[data-theme="light"] .settings-head p,
+:root[data-theme="light"] .impact-hero p,
+:root[data-theme="light"] .discover-head p{color:#68716c!important}
+:root[data-theme="light"] .composer{
+  background:#fff!important;
+  border-color:#d7ddd8!important;
+  box-shadow:0 8px 28px #1720190d;
+}
+:root[data-theme="light"] #messageInput{
+  color:#1d231f!important;
+}
+:root[data-theme="light"] #messageInput::placeholder{color:#8a948e!important}
+:root[data-theme="light"] .tools button{color:#58625c!important}
+:root[data-theme="light"] #sendButton{
+  background:var(--accent)!important;
+  color:#fff!important;
+}
+:root[data-theme="light"] .disclaimer{color:#818a84!important}
+:root[data-theme="light"] .message{
+  color:#202622!important;
+}
+:root[data-theme="light"] .message.assistant{
+  background:#fff!important;
+  border-color:#e0e4e1!important;
+  box-shadow:0 3px 12px #17201909;
+}
+:root[data-theme="light"] .message.user{
+  background:var(--accent-soft)!important;
+  border-color:var(--accent-border)!important;
+}
+:root[data-theme="light"] .settings-card,
+:root[data-theme="light"] .impact-step,
+:root[data-theme="light"] .impact-goal,
+:root[data-theme="light"] .impact-numbers>div,
+:root[data-theme="light"] .discover-card,
+:root[data-theme="light"] .discover-prompt,
+:root[data-theme="light"] .stats-card{
+  background:#fff!important;
+  border-color:#dde2de!important;
+  color:#202622!important;
+  box-shadow:0 4px 18px #17201908;
+}
+:root[data-theme="light"] .settings-card-title,
+:root[data-theme="light"] .setting-row{border-color:#e2e6e3!important}
+:root[data-theme="light"] .settings-card-title p,
+:root[data-theme="light"] .setting-row span,
+:root[data-theme="light"] .impact-step p,
+:root[data-theme="light"] .impact-copy>p,
+:root[data-theme="light"] .discover-card p,
+:root[data-theme="light"] .discover-prompt p{color:#68716c!important}
+:root[data-theme="light"] .theme-picker{
+  background:#f0f3f1!important;
+  border-color:#dce1dd!important;
+}
+:root[data-theme="light"] .theme-picker button{color:#535d57!important}
+:root[data-theme="light"] .account-settings-box{color:#202622!important}
+:root[data-theme="light"] .impact-note{
+  background:#f5f7f5!important;
+  border-color:#dce2dd!important;
+  color:#657069!important;
+}
+:root[data-theme="light"] .impact-conversion{
+  background:#f5f8f5!important;
+  border-color:#dce2dd!important;
+}
+:root[data-theme="light"] .chat-search-panel,
+:root[data-theme="light"] .inchat-search{
+  background:#fff!important;
+  border-color:#d9dfda!important;
+  color:#1d231f!important;
+  box-shadow:0 10px 30px #17201912;
+}
+:root[data-theme="light"] .chat-search-panel input,
+:root[data-theme="light"] .inchat-search input{color:#1d231f!important}
+
+/* System theme: use the same polished light palette when OS is light */
+@media(prefers-color-scheme:light){
+  :root[data-theme="system"] body{background:#f7f8f7!important;color:#171b19!important}
+  :root[data-theme="system"] .app-shell{background:#f7f8f7!important}
+  :root[data-theme="system"] .sidebar{background:#f0f2f0!important;border-color:#dce1dd!important}
+  :root[data-theme="system"] .main{background:#fafbfa!important}
+  :root[data-theme="system"] .brand,:root[data-theme="system"] .welcome h1,:root[data-theme="system"] .settings-head h1{color:#151917!important}
+  :root[data-theme="system"] .nav-item{color:#343b37!important}
+  :root[data-theme="system"] .history-chat,:root[data-theme="system"] .settings-card,:root[data-theme="system"] .composer{background:#fff!important;border-color:#dde2de!important;color:#202622!important}
+  :root[data-theme="system"] #messageInput{color:#1d231f!important}
+}
