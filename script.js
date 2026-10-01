@@ -1,6 +1,106 @@
 const SUPABASE_URL="https://pmshdzafuaadxbkzzvdj.supabase.co",SUPABASE_KEY="sb_publishable_yWRdbcIpWXniK9fe31KchQ_3T0zGdpb",db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),LEAFGPT_API="https://leaf-gpt.vercel.app/api/chat";
 const $=id=>document.getElementById(id),form=$("chatForm"),input=$("messageInput"),chat=$("chat"),welcome=$("welcome"),countEl=$("messageCount"),progress=$("progressBar"),historyList=$("historyList"),accountButton=$("accountButton"),accountName=$("accountName"),accountStatus=$("accountStatus"),authOverlay=$("authOverlay"),authClose=$("authClose"),authForm=$("authForm"),authEmail=$("authEmail"),authPassword=$("authPassword"),authTitle=$("authTitle"),authSubmit=$("authSubmit"),authSwitch=$("authSwitch"),authMessage=$("authMessage"),logoutButton=$("logoutButton"),statsPage=$("statsPage"),statsButton=$("statsButton"),statsMessages=$("statsMessages"),statsTrees=$("statsTrees"),statsRemaining=$("statsRemaining"),statsProgressText=$("statsProgressText"),statsProgressBar=$("statsProgressBar"),impactPage=$("impactPage"),impactButton=$("impactButton"),discoverPage=$("discoverPage"),discoverButton=$("discoverButton"),surpriseButton=$("surpriseButton"),composerWrap=document.querySelector(".composer-wrap"),treeCounter=document.querySelector(".tree-counter");
 let currentUser=null,currentChatId=null,messages=[],generating=false,mode="login",totalMessages=0,treesPlanted=0,chatsLoadVersion=0,currentView="chat";
+
+const historySection=$("historySection"),historyListWrap=$("historyListWrap"),historyToggle=$("historyToggle"),
+chatSearchButton=$("chatSearchButton"),chatSearchPanel=$("chatSearchPanel"),chatSearchInput=$("chatSearchInput"),chatSearchClose=$("chatSearchClose"),
+inChatSearch=$("inChatSearch"),inChatSearchButton=$("inChatSearchButton"),inChatSearchInput=$("inChatSearchInput"),inChatSearchClose=$("inChatSearchClose"),
+inChatSearchCount=$("inChatSearchCount"),searchPrev=$("searchPrev"),searchNext=$("searchNext");
+let historyCollapsed=false,chatSearchQuery="",chatSearchMatches=[],chatSearchIndex=-1;
+
+historyToggle?.addEventListener("click",()=>{
+  historyCollapsed=!historyCollapsed;
+  historySection.classList.toggle("collapsed",historyCollapsed);
+  historyToggle.classList.toggle("rotated",historyCollapsed);
+  historyToggle.title=historyCollapsed?"Rozwiń rozmowy":"Zwiń rozmowy";
+});
+
+function openChatSearch(){
+  chatSearchPanel.classList.add("open");
+  requestAnimationFrame(()=>chatSearchInput.focus());
+}
+function closeChatSearch(){
+  chatSearchPanel.classList.remove("open");
+  chatSearchInput.value="";
+  chatSearchQuery="";
+  filterChatHistory();
+}
+chatSearchButton?.addEventListener("click",()=>chatSearchPanel.classList.contains("open")?closeChatSearch():openChatSearch());
+chatSearchClose?.addEventListener("click",closeChatSearch);
+chatSearchInput?.addEventListener("input",()=>{chatSearchQuery=chatSearchInput.value.trim().toLocaleLowerCase("pl");filterChatHistory()});
+function filterChatHistory(){
+  document.querySelectorAll(".history-chat").forEach(row=>{
+    const title=row.querySelector(".history-chat-title")?.textContent?.toLocaleLowerCase("pl")||"";
+    row.classList.toggle("search-hidden",!!chatSearchQuery&&!title.includes(chatSearchQuery));
+  });
+}
+
+function openInChatSearch(){
+  if(currentView!=="chat")showChatView();
+  inChatSearch.classList.add("open");
+  requestAnimationFrame(()=>inChatSearchInput.focus());
+  runInChatSearch();
+}
+function closeInChatSearch(){
+  inChatSearch.classList.remove("open");
+  inChatSearchInput.value="";
+  clearInChatSearch();
+}
+inChatSearchButton?.addEventListener("click",openInChatSearch);
+inChatSearchClose?.addEventListener("click",closeInChatSearch);
+inChatSearchInput?.addEventListener("input",runInChatSearch);
+searchPrev?.addEventListener("click",()=>moveSearch(-1));
+searchNext?.addEventListener("click",()=>moveSearch(1));
+
+function clearInChatSearch(){
+  chatSearchMatches=[];
+  chatSearchIndex=-1;
+  document.querySelectorAll("#chat .message").forEach(el=>{
+    if(el.dataset.originalText!==undefined){
+      el.textContent=el.dataset.originalText;
+      delete el.dataset.originalText;
+    }
+    el.classList.remove("search-hit","search-current");
+  });
+  inChatSearchCount.textContent="0 / 0";
+}
+function runInChatSearch(){
+  clearInChatSearch();
+  const q=inChatSearchInput.value.trim();
+  if(!q)return;
+  const qLower=q.toLocaleLowerCase("pl");
+  document.querySelectorAll("#chat .message").forEach(el=>{
+    const original=el.textContent;
+    if(original.toLocaleLowerCase("pl").includes(qLower)){
+      el.dataset.originalText=original;
+      el.classList.add("search-hit");
+      chatSearchMatches.push(el);
+    }
+  });
+  if(chatSearchMatches.length){chatSearchIndex=0;focusSearchMatch()}
+  else inChatSearchCount.textContent="0 / 0";
+}
+function moveSearch(dir){
+  if(!chatSearchMatches.length)return;
+  chatSearchIndex=(chatSearchIndex+dir+chatSearchMatches.length)%chatSearchMatches.length;
+  focusSearchMatch();
+}
+function focusSearchMatch(){
+  chatSearchMatches.forEach((el,i)=>el.classList.toggle("search-current",i===chatSearchIndex));
+  const el=chatSearchMatches[chatSearchIndex];
+  el?.scrollIntoView({behavior:"smooth",block:"center"});
+  inChatSearchCount.textContent=`${chatSearchIndex+1} / ${chatSearchMatches.length}`;
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    if(inChatSearch.classList.contains("open"))closeInChatSearch();
+    else if(chatSearchPanel.classList.contains("open"))closeChatSearch();
+  }
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="f"&&currentView==="chat"){
+    e.preventDefault();openInChatSearch();
+  }
+});
+
 input.addEventListener("input",()=>{input.style.height="auto";input.style.height=Math.min(input.scrollHeight,140)+"px"});input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();if(!generating)form.requestSubmit()}});
 $("newChatButton")?.addEventListener("click",()=>{showChatView();startNewChat()});$("newChatIcon")?.addEventListener("click",()=>{showChatView();startNewChat()});statsButton?.addEventListener("click",showStatsView);impactButton?.addEventListener("click",showImpactView);discoverButton?.addEventListener("click",showDiscoverView);
 function showChatView(){currentView="chat";statsPage.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.add("hidden");chat.classList.remove("hidden");composerWrap.classList.remove("hidden");treeCounter.classList.remove("hidden");if(!messages.length)welcome.style.display="";statsButton.classList.remove("active");impactButton.classList.remove("active");discoverButton.classList.remove("active")}
@@ -11,7 +111,7 @@ function useDiscoverPrompt(text){showChatView();startNewChat();input.value=text;
 document.querySelectorAll("[data-prompt]").forEach(btn=>btn.addEventListener("click",()=>useDiscoverPrompt(btn.dataset.prompt)));
 const surprisePrompts=["Naucz mnie czegoś zaskakującego o kosmosie.","Opowiedz mi o technologii, która może zmienić przyszłość.","Daj mi nietypowy pomysł na kreatywny projekt.","Naucz mnie ciekawej rzeczy o samochodach w 5 minut.","Opowiedz mi o dziwnym zjawisku naukowym i wyjaśnij je prosto.","Daj mi ciekawy temat, o którym prawdopodobnie niewiele wiem."];
 surpriseButton?.addEventListener("click",()=>useDiscoverPrompt(surprisePrompts[Math.floor(Math.random()*surprisePrompts.length)]));
-function startNewChat(){currentChatId=null;messages=[];chat.innerHTML="";welcome.style.display="";input.value="";markActiveChat();input.focus()}
+function startNewChat(){closeInChatSearch();currentChatId=null;messages=[];chat.innerHTML="";welcome.style.display="";input.value="";markActiveChat();input.focus()}
 function addMessage(text,type){const e=document.createElement("div");e.className="message "+type;e.textContent=text;chat.appendChild(e);chat.scrollTop=chat.scrollHeight}
 function titleFor(t){t=t.replace(/\s+/g," ").trim();return t.length>34?t.slice(0,34)+"…":t||"Nowy czat"}
 async function saveMessage(role,content){if(currentUser&&currentChatId){const{error}=await db.from("messages").insert({chat_id:currentChatId,user_id:currentUser.id,role,content});if(error)console.error(error)}}
@@ -58,8 +158,8 @@ async function incrementStats(){
   await loadStats();
 }
 form.addEventListener("submit",async e=>{e.preventDefault();if(generating)return;const text=input.value.trim();if(!text)return;welcome.style.display="none";if(currentUser&&!currentChatId){const{data,error}=await db.from("chats").insert({user_id:currentUser.id,title:titleFor(text)}).select().single();if(!error){currentChatId=data.id;await loadChats()}else console.error(error)}addMessage(text,"user");messages.push({role:"user",content:text});await saveMessage("user",text);await incrementStats();input.value="";generating=true;const thinking=document.createElement("div");thinking.className="message bot thinking";thinking.textContent="LeafGPT myśli... 🍃";chat.appendChild(thinking);try{const r=await fetch(LEAFGPT_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages})}),d=await r.json();thinking.remove();if(!r.ok){addMessage(d.error||"Wystąpił błąd LeafGPT.","bot");generating=false;return}const reply=d.reply||"Nie udało mi się wygenerować odpowiedzi.";addMessage(reply,"bot");messages.push({role:"assistant",content:reply});await saveMessage("assistant",reply);if(currentUser)await loadChats()}catch(err){thinking.remove();addMessage("Nie udało się połączyć z serwerem LeafGPT.","bot");console.error(err)}generating=false});
-async function loadChats(){const v=++chatsLoadVersion;if(!currentUser){historyList.replaceChildren();return}const uid=currentUser.id,{data,error}=await db.from("chats").select("id,title,updated_at").eq("user_id",uid).order("updated_at",{ascending:false});if(v!==chatsLoadVersion||!currentUser||currentUser.id!==uid)return;if(error)return console.error(error);const f=document.createDocumentFragment();for(const item of data||[]){const row=document.createElement("div");row.className="history-chat";row.dataset.chatId=item.id;if(item.id===currentChatId)row.classList.add("active-chat");const open=document.createElement("button");open.className="history-chat-open";open.innerHTML="<span>○</span>";const title=document.createElement("span");title.className="history-chat-title";title.textContent=item.title;open.append(title);open.onclick=()=>{showChatView();openChat(item.id)};const mb=document.createElement("button");mb.className="history-menu-button";mb.textContent="⋯";const menu=document.createElement("div");menu.className="history-menu hidden";const ren=document.createElement("button");ren.textContent="Zmień nazwę";const del=document.createElement("button");del.textContent="Usuń czat";del.className="delete-chat-button";menu.append(ren,del);mb.onclick=e=>{e.stopPropagation();menu.classList.toggle("hidden")};ren.onclick=async e=>{e.stopPropagation();const n=prompt("Nowa nazwa rozmowy:",item.title)?.trim();if(n){await db.from("chats").update({title:n.slice(0,60)}).eq("id",item.id).eq("user_id",uid);await loadChats()}};del.onclick=async e=>{e.stopPropagation();if(confirm(`Usunąć rozmowę "${item.title}"?`)){await db.from("chats").delete().eq("id",item.id).eq("user_id",uid);if(currentChatId===item.id)startNewChat();await loadChats()}};row.append(open,mb,menu);f.append(row)}historyList.replaceChildren(f)}
-async function openChat(id){if(!currentUser||generating)return;currentChatId=id;chat.innerHTML="";messages=[];welcome.style.display="none";const{data,error}=await db.from("messages").select("role,content,created_at").eq("chat_id",id).eq("user_id",currentUser.id).order("created_at",{ascending:true});if(error)return console.error(error);for(const m of data||[]){messages.push({role:m.role,content:m.content});addMessage(m.content,m.role==="assistant"?"bot":"user")}markActiveChat()}
+async function loadChats(){const v=++chatsLoadVersion;if(!currentUser){historyList.replaceChildren();return}const uid=currentUser.id,{data,error}=await db.from("chats").select("id,title,updated_at").eq("user_id",uid).order("updated_at",{ascending:false});if(v!==chatsLoadVersion||!currentUser||currentUser.id!==uid)return;if(error)return console.error(error);const f=document.createDocumentFragment();for(const item of data||[]){const row=document.createElement("div");row.className="history-chat";row.dataset.chatId=item.id;if(item.id===currentChatId)row.classList.add("active-chat");const open=document.createElement("button");open.className="history-chat-open";open.innerHTML="<span>○</span>";const title=document.createElement("span");title.className="history-chat-title";title.textContent=item.title;open.append(title);open.onclick=()=>{showChatView();openChat(item.id)};const mb=document.createElement("button");mb.className="history-menu-button";mb.textContent="⋯";const menu=document.createElement("div");menu.className="history-menu hidden";const ren=document.createElement("button");ren.textContent="Zmień nazwę";const del=document.createElement("button");del.textContent="Usuń czat";del.className="delete-chat-button";menu.append(ren,del);mb.onclick=e=>{e.stopPropagation();menu.classList.toggle("hidden")};ren.onclick=async e=>{e.stopPropagation();const n=prompt("Nowa nazwa rozmowy:",item.title)?.trim();if(n){await db.from("chats").update({title:n.slice(0,60)}).eq("id",item.id).eq("user_id",uid);await loadChats()}};del.onclick=async e=>{e.stopPropagation();if(confirm(`Usunąć rozmowę "${item.title}"?`)){await db.from("chats").delete().eq("id",item.id).eq("user_id",uid);if(currentChatId===item.id)startNewChat();await loadChats()}};row.append(open,mb,menu);f.append(row)}historyList.replaceChildren(f);filterChatHistory()}
+async function openChat(id){if(!currentUser||generating)return;closeInChatSearch();currentChatId=id;chat.innerHTML="";messages=[];welcome.style.display="none";const{data,error}=await db.from("messages").select("role,content,created_at").eq("chat_id",id).eq("user_id",currentUser.id).order("created_at",{ascending:true});if(error)return console.error(error);for(const m of data||[]){messages.push({role:m.role,content:m.content});addMessage(m.content,m.role==="assistant"?"bot":"user")}markActiveChat()}
 function markActiveChat(){document.querySelectorAll(".history-chat").forEach(e=>e.classList.toggle("active-chat",e.dataset.chatId===currentChatId))}
 accountButton.onclick=()=>{authOverlay.classList.remove("hidden");renderModal()};authClose.onclick=()=>authOverlay.classList.add("hidden");authSwitch.onclick=()=>{mode=mode==="login"?"register":"login";renderModal()};
 function renderModal(){if(currentUser){authTitle.textContent="Twoje konto";authForm.classList.add("hidden");authSwitch.classList.add("hidden");logoutButton.classList.remove("hidden");authMessage.textContent=currentUser.email||"";return}authForm.classList.remove("hidden");authSwitch.classList.remove("hidden");logoutButton.classList.add("hidden");authTitle.textContent=mode==="login"?"Zaloguj się":"Utwórz konto";authSubmit.textContent=mode==="login"?"Zaloguj się":"Zarejestruj się";authSwitch.textContent=mode==="login"?"Nie masz konta? Zarejestruj się":"Masz już konto? Zaloguj się"}
