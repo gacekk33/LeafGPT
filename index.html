@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#111315"><title>LeafGPT</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="style.css?v=discover-1"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body>
 <div class="app-shell">
 <aside class="sidebar">
@@ -19,6 +19,35 @@
 <section class="tree-counter"><div class="tree-icon">🌳</div><div class="tree-info"><div class="tree-label"><span>Wiadomości do kolejnego drzewa</span><strong><span id="messageCount">0</span> / 100</strong></div><div class="progress"><div id="progressBar"></div></div></div></section>
 <section class="welcome" id="welcome"><h1>Witaj w <span>LeafGPT</span> 🍃</h1><p>Rozmawiaj, zdobywaj wiedzę i wspólnie dbajmy o lepszą przyszłość naszej planety.</p></section>
 <section class="chat" id="chat"></section>
+
+<section class="discover-page hidden" id="discoverPage">
+  <div class="discover-hero">
+    <div class="discover-badge">✨ ODKRYWAJ</div>
+    <h1>Co dziś <span>odkryjemy?</span></h1>
+    <p>Wybierz kategorię albo gotowy pomysł. LeafGPT przygotuje wiadomość, a Ty możesz ją zmienić przed wysłaniem.</p>
+  </div>
+  <div class="discover-grid">
+    <button class="discover-card" data-prompt="Wytłumacz mi wybrany przeze mnie trudny temat w prosty sposób, krok po kroku."><i>📚</i><strong>Nauka</strong><span>Proste wyjaśnienia i pomoc w zrozumieniu tematów.</span></button>
+    <button class="discover-card" data-prompt="Pomóż mi zrobić kreatywną burzę mózgów i wymyślić kilka ciekawych pomysłów."><i>💡</i><strong>Pomysły</strong><span>Burza mózgów, projekty i nowe koncepcje.</span></button>
+    <button class="discover-card" data-prompt="Pomóż mi stworzyć projekt programistyczny od zera. Najpierw zapytaj, co chcę zbudować."><i>💻</i><strong>Programowanie</strong><span>Kod, strony, boty i własne projekty.</span></button>
+    <button class="discover-card" data-prompt="Pomóż mi napisać albo poprawić tekst. Najpierw zapytaj, jaki tekst chcę przygotować."><i>✍️</i><strong>Pisanie</strong><span>Teksty, opisy, pomysły i poprawki.</span></button>
+    <button class="discover-card" data-prompt="Wyjaśnij mi wybrany temat krok po kroku i podaj prosty przykład."><i>🧠</i><strong>Wyjaśnij mi</strong><span>Rozbij skomplikowane rzeczy na proste kroki.</span></button>
+    <button class="discover-card" data-prompt="Pomóż mi z czymś związanym z grami. Zapytaj, w jaką grę gram i czego potrzebuję."><i>🎮</i><strong>Gaming</strong><span>Gry, mechaniki, komendy i konfiguracje.</span></button>
+    <button class="discover-card" data-prompt="Pomóż mi stworzyć coś kreatywnego: nazwę, koncept, scenariusz albo oryginalny pomysł."><i>🎨</i><strong>Kreatywność</strong><span>Nazwy, koncepty, scenariusze i inspiracje.</span></button>
+    <button class="discover-card" data-prompt="Opowiedz mi ciekawostkę na losowy interesujący temat i wyjaśnij, dlaczego jest ciekawa."><i>🌍</i><strong>Ciekawostki</strong><span>Odkryj coś, czego prawdopodobnie jeszcze nie wiesz.</span></button>
+  </div>
+  <div class="prompt-section">
+    <div class="discover-section-head"><div><small>POPULARNE PROMPTY</small><h2>Zacznij jednym kliknięciem</h2></div><button id="surpriseButton" class="surprise-button" type="button">🎲 Zaskocz mnie</button></div>
+    <div class="prompt-chips">
+      <button data-prompt="Naucz mnie czegoś ciekawego w 5 minut.">Naucz mnie czegoś w 5 minut</button>
+      <button data-prompt="Daj mi pomysł na mały projekt, który mogę zacząć dzisiaj.">Daj mi pomysł na projekt</button>
+      <button data-prompt="Wyjaśnij mi wybrany temat bardzo prosto i użyj porównania z codziennego życia.">Wyjaśnij to bardzo prosto</button>
+      <button data-prompt="Zrób ze mną burzę mózgów. Najpierw zapytaj, nad czym pracuję.">Zróbmy burzę mózgów</button>
+      <button data-prompt="Podaj mi 5 ciekawych rzeczy, których warto się dziś dowiedzieć.">Co warto dziś odkryć?</button>
+    </div>
+  </div>
+</section>
+
 <section class="stats-page hidden" id="statsPage">
   <div class="stats-header"><h1>Twoje statystyki 🌱</h1><p>Twój postęp w LeafGPT zapisany na koncie.</p></div>
   <div class="stats-grid">
@@ -66,4 +95,4 @@
 <div class="composer-wrap"><form class="composer" id="chatForm"><textarea id="messageInput" rows="1" placeholder="Napisz do LeafGPT..."></textarea><div class="composer-bottom"><div class="tools"><button type="button">⌕</button><button type="button">◎</button></div><button class="send" type="submit">➤</button></div></form><p class="notice">LeafGPT może popełniać błędy. Sprawdzaj ważne informacje.</p></div>
 </main></div>
 <div class="auth-overlay hidden" id="authOverlay"><div class="auth-modal"><button class="auth-close" id="authClose">×</button><div class="auth-logo">LeafGPT 🍃</div><h2 id="authTitle">Zaloguj się</h2><p class="auth-subtitle">Zaloguj się, aby synchronizować rozmowy między urządzeniami.</p><form id="authForm"><label>E-mail</label><input id="authEmail" type="email" required><label>Hasło</label><input id="authPassword" type="password" minlength="6" required><button class="auth-submit" id="authSubmit">Zaloguj się</button></form><p class="auth-message" id="authMessage"></p><button class="auth-switch" id="authSwitch">Nie masz konta? Zarejestruj się</button><button class="logout hidden" id="logoutButton">Wyloguj się</button></div></div>
-<script src="script.js"></script></body></html>
+<script src="script.js?v=discover-1"></script></body></html>
