@@ -10,8 +10,47 @@ function addMessage(text,type){const e=document.createElement("div");e.className
 function titleFor(t){t=t.replace(/\s+/g," ").trim();return t.length>34?t.slice(0,34)+"…":t||"Nowy czat"}
 async function saveMessage(role,content){if(currentUser&&currentChatId){const{error}=await db.from("messages").insert({chat_id:currentChatId,user_id:currentUser.id,role,content});if(error)console.error(error)}}
 function updateCounters(){const current=totalMessages%100;treesPlanted=Math.floor(totalMessages/100);countEl.textContent=current;progress.style.width=current+"%";statsMessages.textContent=totalMessages;statsTrees.textContent=treesPlanted;statsRemaining.textContent=current===0&&totalMessages>0?100:100-current;statsProgressText.textContent=`${current} / 100`;statsProgressBar.style.width=current+"%"}
-async function loadStats(){if(!currentUser){totalMessages=0;treesPlanted=0;updateCounters();return}const{data,error}=await db.from("user_stats").select("total_messages,trees_planted").eq("user_id",currentUser.id).maybeSingle();if(error){console.error("Błąd statystyk:",error);return}if(!data){const created=await db.from("user_stats").insert({user_id:currentUser.id,total_messages:0,trees_planted:0}).select().single();if(created.error){console.error(created.error);return}totalMessages=0;treesPlanted=0}else{totalMessages=data.total_messages||0;treesPlanted=data.trees_planted||0}updateCounters()}
-async function incrementStats(){if(!currentUser){totalMessages++;updateCounters();return}totalMessages++;treesPlanted=Math.floor(totalMessages/100);updateCounters();const{error}=await db.from("user_stats").upsert({user_id:currentUser.id,total_messages:totalMessages,trees_planted:treesPlanted,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error)console.error("Nie udało się zapisać statystyk:",error)}
+async function loadStats(){
+  if(!currentUser){
+    totalMessages=0;
+    treesPlanted=0;
+    updateCounters();
+    return;
+  }
+
+  // Źródłem prawdy są zapisane wiadomości użytkownika.
+  // Dzięki temu refresh nie może wyzerować licznika.
+  const {count,error:countError}=await db
+    .from("messages")
+    .select("id",{count:"exact",head:true})
+    .eq("user_id",currentUser.id)
+    .eq("role","user");
+
+  if(countError){
+    console.error("Błąd liczenia wiadomości:",countError);
+    return;
+  }
+
+  totalMessages=count||0;
+  treesPlanted=Math.floor(totalMessages/100);
+  updateCounters();
+
+  // user_stats zostaje jako trwałe podsumowanie konta.
+  const {error:statsError}=await db.from("user_stats").upsert({
+    user_id:currentUser.id,
+    total_messages:totalMessages,
+    trees_planted:treesPlanted,
+    updated_at:new Date().toISOString()
+  },{onConflict:"user_id"});
+
+  if(statsError) console.error("Błąd synchronizacji user_stats:",statsError);
+}
+
+async function incrementStats(){
+  // Wiadomość jest najpierw zapisywana w tabeli messages,
+  // a następnie przeliczamy stan bez zgadywania lokalnej wartości.
+  await loadStats();
+}
 form.addEventListener("submit",async e=>{e.preventDefault();if(generating)return;const text=input.value.trim();if(!text)return;welcome.style.display="none";if(currentUser&&!currentChatId){const{data,error}=await db.from("chats").insert({user_id:currentUser.id,title:titleFor(text)}).select().single();if(!error){currentChatId=data.id;await loadChats()}else console.error(error)}addMessage(text,"user");messages.push({role:"user",content:text});await saveMessage("user",text);await incrementStats();input.value="";generating=true;const thinking=document.createElement("div");thinking.className="message bot thinking";thinking.textContent="LeafGPT myśli... 🍃";chat.appendChild(thinking);try{const r=await fetch(LEAFGPT_API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages})}),d=await r.json();thinking.remove();if(!r.ok){addMessage(d.error||"Wystąpił błąd LeafGPT.","bot");generating=false;return}const reply=d.reply||"Nie udało mi się wygenerować odpowiedzi.";addMessage(reply,"bot");messages.push({role:"assistant",content:reply});await saveMessage("assistant",reply);if(currentUser)await loadChats()}catch(err){thinking.remove();addMessage("Nie udało się połączyć z serwerem LeafGPT.","bot");console.error(err)}generating=false});
 async function loadChats(){const v=++chatsLoadVersion;if(!currentUser){historyList.replaceChildren();return}const uid=currentUser.id,{data,error}=await db.from("chats").select("id,title,updated_at").eq("user_id",uid).order("updated_at",{ascending:false});if(v!==chatsLoadVersion||!currentUser||currentUser.id!==uid)return;if(error)return console.error(error);const f=document.createDocumentFragment();for(const item of data||[]){const row=document.createElement("div");row.className="history-chat";row.dataset.chatId=item.id;if(item.id===currentChatId)row.classList.add("active-chat");const open=document.createElement("button");open.className="history-chat-open";open.innerHTML="<span>○</span>";const title=document.createElement("span");title.className="history-chat-title";title.textContent=item.title;open.append(title);open.onclick=()=>{showChatView();openChat(item.id)};const mb=document.createElement("button");mb.className="history-menu-button";mb.textContent="⋯";const menu=document.createElement("div");menu.className="history-menu hidden";const ren=document.createElement("button");ren.textContent="Zmień nazwę";const del=document.createElement("button");del.textContent="Usuń czat";del.className="delete-chat-button";menu.append(ren,del);mb.onclick=e=>{e.stopPropagation();menu.classList.toggle("hidden")};ren.onclick=async e=>{e.stopPropagation();const n=prompt("Nowa nazwa rozmowy:",item.title)?.trim();if(n){await db.from("chats").update({title:n.slice(0,60)}).eq("id",item.id).eq("user_id",uid);await loadChats()}};del.onclick=async e=>{e.stopPropagation();if(confirm(`Usunąć rozmowę "${item.title}"?`)){await db.from("chats").delete().eq("id",item.id).eq("user_id",uid);if(currentChatId===item.id)startNewChat();await loadChats()}};row.append(open,mb,menu);f.append(row)}historyList.replaceChildren(f)}
 async function openChat(id){if(!currentUser||generating)return;currentChatId=id;chat.innerHTML="";messages=[];welcome.style.display="none";const{data,error}=await db.from("messages").select("role,content,created_at").eq("chat_id",id).eq("user_id",currentUser.id).order("created_at",{ascending:true});if(error)return console.error(error);for(const m of data||[]){messages.push({role:m.role,content:m.content});addMessage(m.content,m.role==="assistant"?"bot":"user")}markActiveChat()}
