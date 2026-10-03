@@ -1,6 +1,10 @@
+const ADMIN_UID="6226ed7c-c0b3-4d8d-afe7-1253c89b8f98";
 const SUPABASE_URL="https://pmshdzafuaadxbkzzvdj.supabase.co",SUPABASE_KEY="sb_publishable_yWRdbcIpWXniK9fe31KchQ_3T0zGdpb",db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),LEAFGPT_API="https://leaf-gpt.vercel.app/api/chat";
 const $=id=>document.getElementById(id),form=$("chatForm"),input=$("messageInput"),chat=$("chat"),welcome=$("welcome"),countEl=$("messageCount"),progress=$("progressBar"),historyList=$("historyList"),accountButton=$("accountButton"),accountName=$("accountName"),accountStatus=$("accountStatus"),authOverlay=$("authOverlay"),authClose=$("authClose"),authForm=$("authForm"),authEmail=$("authEmail"),authPassword=$("authPassword"),authTitle=$("authTitle"),authSubmit=$("authSubmit"),authSwitch=$("authSwitch"),authMessage=$("authMessage"),logoutButton=$("logoutButton"),statsPage=$("statsPage"),statsButton=$("statsButton"),statsMessages=$("statsMessages"),statsTrees=$("statsTrees"),statsRemaining=$("statsRemaining"),statsProgressText=$("statsProgressText"),statsProgressBar=$("statsProgressBar"),impactPage=$("impactPage"),impactButton=$("impactButton"),discoverPage=$("discoverPage"),discoverButton=$("discoverButton"),surpriseButton=$("surpriseButton"),promoPage=$("promoPage"),promoButton=$("promoButton"),composerWrap=document.querySelector(".composer-wrap"),treeCounter=document.querySelector(".tree-counter");
 let currentUser=null,currentChatId=null,messages=[],generating=false,mode="login",totalMessages=0,treesPlanted=0,chatsLoadVersion=0,currentView="chat";
+const adminStatsZone=$("adminStatsZone"),adminRefresh=$("adminRefresh"),adminStatus=$("adminStatus");
+const isAdmin=()=>currentUser?.id===ADMIN_UID;
+const fmt=n=>Number(n||0).toLocaleString("pl-PL");
 
 const settingsButton=$("settingsButton"),settingsPage=$("settingsPage"),themePicker=$("themePicker"),accentPicker=$("accentPicker"),
 settingsAccountName=$("settingsAccountName"),settingsAccountEmail=$("settingsAccountEmail"),settingsLogout=$("settingsLogout");
@@ -143,7 +147,7 @@ document.addEventListener("keydown",e=>{
 input.addEventListener("input",()=>{input.style.height="auto";input.style.height=Math.min(input.scrollHeight,140)+"px"});input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();if(!generating)form.requestSubmit()}});
 $("newChatButton")?.addEventListener("click",()=>{showChatView();startNewChat()});$("newChatIcon")?.addEventListener("click",()=>{showChatView();startNewChat()});statsButton?.addEventListener("click",showStatsView);impactButton?.addEventListener("click",showImpactView);discoverButton?.addEventListener("click",showDiscoverView);promoButton?.addEventListener("click",showPromoView);
 function showChatView(){promoPage?.classList.add("hidden");promoButton?.classList.remove("active");settingsPage?.classList.add("hidden");settingsButton?.classList.remove("active");currentView="chat";statsPage.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.add("hidden");chat.classList.remove("hidden");composerWrap.classList.remove("hidden");treeCounter.classList.remove("hidden");if(!messages.length)welcome.style.display="";statsButton.classList.remove("active");impactButton.classList.remove("active");discoverButton.classList.remove("active")}
-function showStatsView(){promoPage?.classList.add("hidden");promoButton?.classList.remove("active");settingsPage?.classList.add("hidden");settingsButton?.classList.remove("active");currentView="stats";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.add("hidden");statsPage.classList.remove("hidden");statsButton.classList.add("active");impactButton.classList.remove("active");discoverButton.classList.remove("active");updateCounters()}
+function showStatsView(){promoPage?.classList.add("hidden");promoButton?.classList.remove("active");settingsPage?.classList.add("hidden");settingsButton?.classList.remove("active");currentView="stats";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.add("hidden");statsPage.classList.remove("hidden");statsButton.classList.add("active");impactButton.classList.remove("active");discoverButton.classList.remove("active");updateCounters();toggleAdminZone();if(isAdmin())loadAdminStats()}
 function showImpactView(){promoPage?.classList.add("hidden");promoButton?.classList.remove("active");settingsPage?.classList.add("hidden");settingsButton?.classList.remove("active");currentView="impact";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");statsPage.classList.add("hidden");discoverPage.classList.add("hidden");impactPage.classList.remove("hidden");statsButton.classList.remove("active");impactButton.classList.add("active");discoverButton.classList.remove("active")}
 function showDiscoverView(){promoPage?.classList.add("hidden");promoButton?.classList.remove("active");settingsPage?.classList.add("hidden");settingsButton?.classList.remove("active");currentView="discover";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");statsPage.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.remove("hidden");statsButton.classList.remove("active");impactButton.classList.remove("active");discoverButton.classList.add("active")}
 function showPromoView(){currentView="promo";welcome.style.display="none";chat.classList.add("hidden");composerWrap.classList.add("hidden");treeCounter.classList.add("hidden");statsPage.classList.add("hidden");impactPage.classList.add("hidden");discoverPage.classList.add("hidden");settingsPage?.classList.add("hidden");promoPage?.classList.remove("hidden");statsButton.classList.remove("active");impactButton.classList.remove("active");discoverButton.classList.remove("active");settingsButton?.classList.remove("active");promoButton?.classList.add("active")}
@@ -192,6 +196,29 @@ async function loadStats(){
   if(statsError) console.error("Błąd synchronizacji user_stats:",statsError);
 }
 
+function toggleAdminZone(){
+  adminStatsZone?.classList.toggle("hidden",!isAdmin());
+}
+async function loadAdminStats(){
+  if(!isAdmin()) return;
+  adminStatus.textContent="Pobieranie danych…";
+  adminRefresh.disabled=true;
+  const {data,error}=await db.rpc("leafgpt_admin_overview");
+  adminRefresh.disabled=false;
+  if(error){console.error("Błąd statystyk administratora:",error);adminStatus.textContent="Nie udało się pobrać statystyk. Uruchom plik supabase_admin.sql w Supabase SQL Editor.";return}
+  const d=data||{};
+  $("adminAccounts").textContent=fmt(d.accounts);
+  $("adminChats").textContent=fmt(d.chats);
+  $("adminUserMessages").textContent=fmt(d.user_messages);
+  $("adminAssistantMessages").textContent=fmt(d.assistant_messages);
+  $("adminAllMessages").textContent=fmt(d.all_messages);
+  $("adminTrees").textContent=fmt(d.trees);
+  $("adminAccountsToday").textContent=fmt(d.accounts_today);
+  $("adminMessagesToday").textContent=fmt(d.user_messages_today);
+  adminStatus.textContent="Dane zaktualizowane.";
+}
+adminRefresh?.addEventListener("click",loadAdminStats);
+
 async function incrementStats(){
   // Wiadomość jest najpierw zapisywana w tabeli messages,
   // a następnie przeliczamy stan bez zgadywania lokalnej wartości.
@@ -205,5 +232,5 @@ accountButton.onclick=()=>{authOverlay.classList.remove("hidden");renderModal()}
 function renderModal(){if(currentUser){authTitle.textContent="Twoje konto";authForm.classList.add("hidden");authSwitch.classList.add("hidden");logoutButton.classList.remove("hidden");authMessage.textContent=currentUser.email||"";return}authForm.classList.remove("hidden");authSwitch.classList.remove("hidden");logoutButton.classList.add("hidden");authTitle.textContent=mode==="login"?"Zaloguj się":"Utwórz konto";authSubmit.textContent=mode==="login"?"Zaloguj się":"Zarejestruj się";authSwitch.textContent=mode==="login"?"Nie masz konta? Zarejestruj się":"Masz już konto? Zaloguj się"}
 authForm.onsubmit=async e=>{e.preventDefault();const email=authEmail.value.trim(),password=authPassword.value;authSubmit.disabled=true;const r=mode==="register"?await db.auth.signUp({email,password}):await db.auth.signInWithPassword({email,password});authSubmit.disabled=false;if(r.error){authMessage.textContent=r.error.message;return}if(mode==="register"&&!r.data.session)authMessage.textContent="Konto utworzone. Sprawdź e-mail.";else authOverlay.classList.add("hidden")};
 logoutButton.onclick=async()=>{await db.auth.signOut();startNewChat();historyList.replaceChildren();authOverlay.classList.add("hidden")};
-async function renderUser(u){currentUser=u;if(u){accountName.textContent=u.email?.split("@")[0]||"Użytkownik";accountStatus.textContent=u.email||"Zalogowano";await Promise.all([loadChats(),loadStats()])}else{accountName.textContent="Użytkownik";accountStatus.textContent="Zaloguj się, aby zapisywać rozmowy";historyList.replaceChildren();totalMessages=0;treesPlanted=0;updateCounters()}renderModal()}
+async function renderUser(u){currentUser=u;toggleAdminZone();if(u){accountName.textContent=u.email?.split("@")[0]||"Użytkownik";accountStatus.textContent=u.email||"Zalogowano";await Promise.all([loadChats(),loadStats()]);if(isAdmin()&&currentView==="stats")await loadAdminStats()}else{accountName.textContent="Użytkownik";accountStatus.textContent="Zaloguj się, aby zapisywać rozmowy";historyList.replaceChildren();totalMessages=0;treesPlanted=0;updateCounters()}renderModal()}
 db.auth.onAuthStateChange((_e,s)=>renderUser(s?.user??null));updateCounters();

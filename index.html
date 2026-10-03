@@ -67,6 +67,23 @@
     <article class="stat-card"><div class="stat-icon">🍃</div><strong id="statsRemaining">100</strong><span>Wiadomości do kolejnego drzewa</span></article>
     <article class="stat-card stats-wide"><div class="stats-progress-head"><strong>Postęp do kolejnego drzewa</strong><span id="statsProgressText">0 / 100</span></div><div class="progress"><div id="statsProgressBar"></div></div><div class="stats-note">Licznik jest przypisany do Twojego konta. Jedno drzewo nalicza się po każdych 100 wysłanych wiadomościach.</div></article>
   </div>
+  <section class="admin-stats hidden" id="adminStatsZone">
+    <div class="admin-stats-head">
+      <div><span class="admin-badge">ADMIN</span><h2>Strefa administratora</h2><p>Zbiorcze statystyki całego LeafGPT.</p></div>
+      <button type="button" id="adminRefresh">Odśwież</button>
+    </div>
+    <div class="admin-grid">
+      <article class="admin-card"><span>Wszystkie konta</span><strong id="adminAccounts">—</strong></article>
+      <article class="admin-card"><span>Wszystkie czaty</span><strong id="adminChats">—</strong></article>
+      <article class="admin-card"><span>Wiadomości użytkowników</span><strong id="adminUserMessages">—</strong></article>
+      <article class="admin-card"><span>Odpowiedzi LeafGPT</span><strong id="adminAssistantMessages">—</strong></article>
+      <article class="admin-card"><span>Wszystkie wiadomości</span><strong id="adminAllMessages">—</strong></article>
+      <article class="admin-card"><span>Zdobyte drzewa łącznie</span><strong id="adminTrees">—</strong></article>
+      <article class="admin-card"><span>Nowe konta dzisiaj</span><strong id="adminAccountsToday">—</strong></article>
+      <article class="admin-card"><span>Wiadomości użytkowników dzisiaj</span><strong id="adminMessagesToday">—</strong></article>
+    </div>
+    <p class="admin-status" id="adminStatus"></p>
+  </section>
 </section>
 
 <section class="impact-page hidden" id="impactPage">

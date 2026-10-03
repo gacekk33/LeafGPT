@@ -418,3 +418,17 @@ button:active{transform:scale(.96)}
 .partner-logo{width:62px;height:62px;border-radius:15px;object-fit:cover;flex:0 0 auto;background:#101311}.partner-info{min-width:0;flex:1}.partner-info h2{margin:0 0 6px;font-size:20px;color:var(--text,#f2f4f3)}.partner-info p{margin:0;color:var(--muted,#8e9892);font-size:13px;line-height:1.45}.partner-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap;border-radius:12px;padding:12px 15px;background:var(--accent);color:#0d1710;font-size:11px;font-weight:900;letter-spacing:.35px;transition:.18s ease}.partner-link:hover{filter:brightness(1.07);transform:translateY(-1px)}
 :root[data-theme="light"] .partner-card{background:#fff;border-color:#dfe4e0}:root[data-theme="light"] .promo-head h1,:root[data-theme="light"] .partner-info h2{color:#202622}:root[data-theme="light"] .promo-head p,:root[data-theme="light"] .partner-info p{color:#737d77}
 @media(max-width:760px){.promo-page{width:calc(100% - 30px);padding-top:32px}.partner-card{align-items:flex-start;flex-wrap:wrap}.partner-link{width:100%;margin-top:4px}.promo-head h1{font-size:28px}}
+
+
+/* ===== STREFA ADMINA / STATYSTYKI GLOBALNE ===== */
+.admin-stats{margin-top:34px;padding-top:28px;border-top:1px solid var(--border,#2b302d)}
+.admin-stats-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
+.admin-stats-head h2{margin:7px 0 4px;font-size:25px}.admin-stats-head p{margin:0;color:var(--muted,#8e9892);font-size:13px}
+.admin-badge{display:inline-flex;padding:5px 9px;border-radius:999px;background:var(--accent-soft);border:1px solid var(--accent-border);color:var(--accent);font-size:10px;font-weight:900;letter-spacing:1.2px}
+#adminRefresh{border:1px solid var(--accent-border);background:var(--accent-soft);color:var(--accent);border-radius:11px;padding:10px 13px;font-weight:800;cursor:pointer}
+#adminRefresh:disabled{opacity:.55;cursor:wait}.admin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.admin-card{min-height:112px;padding:17px;border:1px solid var(--border,#2b302d);border-radius:16px;background:var(--panel,#181b19);display:flex;flex-direction:column;justify-content:space-between}
+.admin-card span{color:var(--muted,#8e9892);font-size:12px}.admin-card strong{font-size:28px;line-height:1;color:var(--text,#f2f4f3)}.admin-status{min-height:18px;margin:12px 2px 0;color:var(--muted,#8e9892);font-size:12px}
+:root[data-theme="light"] .admin-card{background:#fff;border-color:#dfe4e0}:root[data-theme="light"] .admin-card strong,:root[data-theme="light"] .admin-stats-head h2{color:#202622}
+@media(max-width:900px){.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.admin-grid{grid-template-columns:1fr}.admin-stats-head{align-items:flex-start;flex-direction:column}}
