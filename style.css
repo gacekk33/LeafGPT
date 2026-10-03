@@ -443,3 +443,23 @@ button:active{transform:scale(.96)}
   width:0;
   height:0;
 }
+
+
+/* Chrome/Edge/Opera: force-hide the chat scrollbar, keep scrolling enabled */
+#chat.chat {
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+#chat.chat::-webkit-scrollbar {
+  width: 0px !important;
+  height: 0px !important;
+  display: none !important;
+  background: transparent !important;
+}
+#chat.chat::-webkit-scrollbar-track,
+#chat.chat::-webkit-scrollbar-thumb,
+#chat.chat::-webkit-scrollbar-corner {
+  background: transparent !important;
+  border: 0 !important;
+}
